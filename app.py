@@ -1,5 +1,4 @@
 import io
-import ast
 
 import duckdb
 import pandas as pd
@@ -25,7 +24,9 @@ with st.sidebar:
         placeholder="Select a theme ...",
     )  
     st.write("You selected :", theme)
-    exercice = con.execute(f"SELECT * FROM memory_state WHERE theme='{theme}'").df()
+
+    exercice = con.execute(f"SELECT * FROM memory_state WHERE theme='{theme}'").df()\
+                                                .sort_values("last_reviewed").reset_index()
     st.write(exercice)
 
     exercice_name = exercice.loc[0, "exercice_name"]
@@ -59,8 +60,8 @@ tab2, tab3 = st.tabs(["Tables", "Solution"])
 
 with tab2:
 
-    exercice_tables = ast.literal_eval(exercice.loc[0, "tables"])
-    for table in exercice_tables:   
+    exercice_tables = exercice.loc[0, "tables"]
+    for table in exercice_tables:  
         st.write(f"table: {table}")
         df_table = con.execute(f"SELECT * FROM {table}").df()
         st.dataframe(df_table)

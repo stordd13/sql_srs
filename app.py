@@ -1,7 +1,7 @@
 import io
-import os
+import os 
 import logging
-
+import ast
 import duckdb
 import pandas as pd
 import streamlit as st
@@ -19,25 +19,21 @@ con = duckdb.connect(database="data/exercices_sql_tables.duckdb", read_only=Fals
 logging.info("TA MERE")
 
 
+
 with st.sidebar:
     theme = st.selectbox(
         "What would you like to revise ?",
         ["cross_joins", "Groupby", "window_functions"],
         index=None,
         placeholder="Select a theme ...",
-    )
+    )  
     st.write("You selected :", theme)
 
-    exercice = (
-        con.execute(f"SELECT * FROM memory_state WHERE theme='{theme}'")
-        .df()
-        .sort_values("last_reviewed")
-        .reset_index()
-    )
+    exercice = con.execute(f"SELECT * FROM memory_state WHERE theme='{theme}'").df().sort_values("last_reviewed").reset_index()
     st.write(exercice)
 
     exercice_name = exercice.loc[0, "exercice_name"]
-    with open(f"answers/{exercice_name}.sql", "r") as f:
+    with open(f"answers/{exercice_name}.sql", 'r') as f:
         answer = f.read()
     solution_df = con.execute(answer).df()
 
@@ -45,7 +41,7 @@ with st.sidebar:
 st.header("enter your code")
 query = st.text_area(label="votre code SQL ici", key="user_input")
 
-if query:
+if query: 
     result = con.execute(query).df()
     st.dataframe(result)
 
@@ -67,10 +63,11 @@ tab2, tab3 = st.tabs(["Tables", "Solution"])
 
 with tab2:
 
-    exercice_tables = exercice.loc[0, "tables"]
-    for table in exercice_tables:
+    exercice_tables = ast.literal_eval(exercice.loc[0, "tables"])
+    for table in exercice_tables: 
         st.write(f"table: {table}")
         df_table = con.execute(f"SELECT * FROM {table}").df()
+   
         st.dataframe(df_table)
 
 #     st.write("table: food_items")

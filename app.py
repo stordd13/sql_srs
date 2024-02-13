@@ -65,5 +65,8 @@ with tab2:
 #     st.write("expected")
 #     st.dataframe(solution_df)
 
-# with tab3:
-#     st.write(ANSWER_STR)
+with tab3:
+    exercice_name = exercice.loc[0, "exercice_name"]
+    with open(f"answers/{exercice_name}.sql", 'r') as f:
+        answer = f.read()
+    st.write(answer)

@@ -1,19 +1,21 @@
 import io
-
+import os 
+import logging
+import ast
 import duckdb
 import pandas as pd
 import streamlit as st
 
-con = duckdb.connect(database="data/exercices_sql_tables.duckdb", read_only=False)
 
+if "data" not in os.listdir():
+  
+    logging.error(os.listdir())
+    logging.error("creating folder data")
+    os.mkdir("data")
+if "exercices_sql_tables.duckdb" not in os.listdir("data"):
+    exec(open("init_db.py").read())
 
-
-# ANSWER_STR = """
-# SELECT * FROM beverages
-# CROSS JOIN food_items
-# """
-
-# solution_df = duckdb.sql(ANSWER_STR).df()
+con = duckdb.connect(database="data/exercices_sql_tables.duckdb", read_only=True)
 
 
 with st.sidebar:
@@ -25,8 +27,7 @@ with st.sidebar:
     )  
     st.write("You selected :", theme)
 
-    exercice = con.execute(f"SELECT * FROM memory_state WHERE theme='{theme}'").df()\
-                                                .sort_values("last_reviewed").reset_index()
+    exercice = con.execute(f"SELECT * FROM memory_state WHERE theme='{theme}'").df().sort_values("last_reviewed").reset_index()
     st.write(exercice)
 
     exercice_name = exercice.loc[0, "exercice_name"]
@@ -60,10 +61,11 @@ tab2, tab3 = st.tabs(["Tables", "Solution"])
 
 with tab2:
 
-    exercice_tables = exercice.loc[0, "tables"]
-    for table in exercice_tables:  
+    exercice_tables = ast.literal_eval(exercice.loc[0, "tables"])
+    for table in exercice_tables: 
         st.write(f"table: {table}")
         df_table = con.execute(f"SELECT * FROM {table}").df()
+   
         st.dataframe(df_table)
 
 #     st.write("table: food_items")

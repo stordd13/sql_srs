@@ -63,3 +63,4 @@ con.execute("CREATE TABLE IF NOT EXISTS beverages AS SELECT * FROM beverages")
 con.execute("CREATE TABLE IF NOT EXISTS sizes AS SELECT * FROM sizes")
 con.execute("CREATE TABLE IF NOT EXISTS trademarks AS SELECT * FROM trademarks")
 
+con.close()

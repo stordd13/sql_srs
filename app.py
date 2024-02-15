@@ -1,7 +1,7 @@
 import io
 import os 
 import logging
-import ast
+
 import duckdb
 import pandas as pd
 import streamlit as st
@@ -61,7 +61,7 @@ tab2, tab3 = st.tabs(["Tables", "Solution"])
 
 with tab2:
 
-    exercice_tables = ast.literal_eval(exercice.loc[0, "tables"])
+    exercice_tables = exercice.loc[0, "tables"]
     for table in exercice_tables: 
         st.write(f"table: {table}")
         df_table = con.execute(f"SELECT * FROM {table}").df()

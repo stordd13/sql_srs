@@ -8,16 +8,14 @@ import streamlit as st
 
 
 if "data" not in os.listdir():
+  
     logging.error(os.listdir())
     logging.error("creating folder data")
     os.mkdir("data")
 if "exercices_sql_tables.duckdb" not in os.listdir("data"):
     exec(open("init_db.py").read())
 
-con = duckdb.connect(database="data/exercices_sql_tables.duckdb", read_only=False)
-
-logging.info("TA MERE")
-
+con = duckdb.connect(database="data/exercices_sql_tables.duckdb", read_only=True)
 
 
 with st.sidebar:
